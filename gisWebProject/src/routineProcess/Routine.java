@@ -49,24 +49,25 @@ public class Routine extends HttpServlet {
 			JSONParser parser = new JSONParser();
 			JSONObject jsonObject = (JSONObject) parser.parse(stringToParse);
 			
-			JSONArray jsonArrayOb=(JSONArray) jsonObject.get("arrayOb");
+			JSONArray jsonArrayOb=(JSONArray) jsonObject.get("JSONFile");
 			// take each value from the json array separately
 			Iterator i = jsonArrayOb.iterator();
-			JSONObject innerObj = (JSONObject) i.next();
+//			JSONObject innerObj = (JSONObject) i.next();
             //{"RequestID":"routineLocation"}
-            if (innerObj.get("RequestID").equals("routineLocation")){
+            //if (innerObj.get("RequestID").equals("routineLocation")){
             	//{"comunity_member_id":123456, "x":7.777, "y":8.999}
-	            while (i.hasNext()) {
-	                innerObj = (JSONObject) i.next();
+	        while (i.hasNext()) {
+	             	JSONObject innerObj = (JSONObject) i.next();
+	                if (innerObj.get("RequestID").equals("routineLocation")){
 	                //int cmid = Integer.parseInt(innerObj.get("comunity_member_id").toString());
-	                String cmid  = innerObj.get("comunity_member_id").toString();
-	                double x = Double.parseDouble(innerObj.get("x").toString());
-	                double y = Double.parseDouble(innerObj.get("y").toString());
-                	System.out.println("comunity_member_id "+ innerObj.get("comunity_member_id") +
-                            " with x cor. " + innerObj.get("x")+
-                            " and y cor. " + innerObj.get("y"));
-                	sqlDataBase.updateLocation(cmid, x, y);
-	            }
+	                	String cmid  = innerObj.get("comunity_member_id").toString();
+	                	double x = Double.parseDouble(innerObj.get("x").toString());
+	                	double y = Double.parseDouble(innerObj.get("y").toString());
+	                	System.out.println("comunity_member_id "+ innerObj.get("comunity_member_id") +
+	                			" with x cor. " + innerObj.get("x")+
+	                			" and y cor. " + innerObj.get("y"));
+	                	sqlDataBase.updateLocation(cmid, x, y);
+	                	}
             }
 		} catch (ParseException ex) {
 

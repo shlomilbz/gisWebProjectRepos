@@ -22,7 +22,7 @@ public class SQL_db {
 			statement.execute("USE GIS_DB;");
 			statement.execute("CREATE TABLE IF NOT EXISTS updatedLocation (cmid VARCHAR(20), x DOUBLE(9,6), y DOUBLE(9,6), createdDate DATE, createdTime TIME, lastUpdatedDate DATE, lastUpdatedTime TIME);");/*  */
 			statement.execute("CREATE TABLE IF NOT EXISTS locationHistory (cmid VARCHAR(20), x DOUBLE(9,6), y DOUBLE(9,6), createdDate DATE, createdTime TIME, lastUpdatedDate DATE, lastUpdatedTime TIME);");
-			statement.execute("CREATE TABLE IF NOT EXISTS decisionTable (medicalCondition VARCHAR(25), state VARCHAR(20), area VARCHAR(15), ptientAge FLOAT(5,2), radius INT);");
+			statement.execute("CREATE TABLE IF NOT EXISTS decisionTable (eventID VARCHAR(20), cmid VARCHAR(20), x DOUBLE(9,6), y DOUBLE(9,6), state VARCHAR(20), area VARCHAR(15), disease VARCHAR(25), age FLOAT(5,2), radius INT);");
 		}
 		catch(SQLException se){
 		      //Handle errors for JDBC
@@ -67,6 +67,7 @@ public class SQL_db {
 				}
 			}
 		}
+		
 		catch(SQLException se){
 		      //Handle errors for JDBC
 		      se.printStackTrace();
@@ -82,7 +83,49 @@ public class SQL_db {
 		}
 	}
 	
-	
+	eventID, cmid, x, y, disease, age
+	public void updateDesicionTable(String cmid, double x, double y){
+		try {
+			connect();
+			statement.execute("USE GIS_DB;");
+			ResultSet rs=statement.executeQuery("SELECT * FROM updatedLocation WHERE cmid='"+cmid+"';");
+			if(!rs.next()){
+				statement.executeUpdate("INSERT INTO updatedLocation VALUES ('"+cmid+"',"+x+","+y+",CURDATE(),CURTIME(),CURDATE(),CURTIME());");
+			}
+			else{
+				//rs.previous();
+				double x_val = rs.getDouble("x");
+				double y_val = rs.getDouble("y");
+				String cmid_val = rs.getString("cmid");
+				Date date_val = rs.getDate("createdDate");
+				Time time_val = rs.getTime("createdTime");
+				Date lastUpdatedDate_val = rs.getDate("lastUpdatedDate");
+				Time lastUpdatedTime_val = rs.getTime("lastUpdatedTime");
+				// if the location changed
+				if((x!=x_val)||(y!=y_val)){
+					statement.executeUpdate("INSERT INTO locationHistory VALUES ('"+cmid_val+"',"+x_val+","+y_val+",'"+date_val+"','"+time_val+"','"+lastUpdatedDate_val+"','"+lastUpdatedTime_val+"');");
+					statement.executeUpdate("UPDATE updatedLocation SET x="+x+", y="+y+", createdDate = CURDATE(), createdTime = CURTIME(), lastUpdatedDate = CURDATE(), lastUpdatedTime = CURTIME() WHERE cmid='"+cmid+"';");
+				}
+				else{// the location didn't changed
+					statement.executeUpdate("UPDATE updatedLocation SET lastUpdatedDate = CURDATE(), lastUpdatedTime = CURTIME() WHERE cmid='"+cmid+"';");
+				}
+			}
+		}
+		
+		catch(SQLException se){
+		      //Handle errors for JDBC
+		      se.printStackTrace();
+		 }
+		 catch(Exception e){
+		      //Handle errors for Class.forName
+		      e.printStackTrace();
+		 }
+		// disconnect
+		finally
+		{
+			disconnect();
+		}
+	}
 	
 	private void connect(){
 		try {

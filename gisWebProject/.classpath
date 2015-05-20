@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.8.0_25">
-		<attributes>
-			<attribute name="owner.project.facets" value="java"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/C-_Users_שלומי אלבז_לימודים_ג נוכחי_פרוייקט רפואת חירום_apache-tomcat-8.0.21-windows-x64_apache-tomcat-8.0.21">
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="lib" path="C:/Users/שריה גולדפישר/workspace/catalina.jar"/>
+	<classpathentry kind="lib" path="C:/Users/שריה גולדפישר/workspace/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/שריה גולדפישר/workspace/mysql-connector-java-5.1.14-bin.jar"/>
+	<classpathentry kind="lib" path="C:/Users/שריה גולדפישר/workspace/servlet-api.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/C-_Users_שריה גולדפישר_Desktop_apache-tomcat-8.0.21">
 		<attributes>
 			<attribute name="owner.project.facets" value="jst.web"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
-	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="lib" path="C:/Users/שלומי אלבז/לימודים/ג נוכחי/פרוייקט רפואת חירום/לפרוייקט jar קבצי/catalina.jar"/>
-	<classpathentry kind="lib" path="C:/Users/שלומי אלבז/לימודים/ג נוכחי/פרוייקט רפואת חירום/לפרוייקט jar קבצי/json-simple-1.1.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/שלומי אלבז/לימודים/ג נוכחי/פרוייקט רפואת חירום/לפרוייקט jar קבצי/servlet-api.jar"/>
-	<classpathentry kind="lib" path="C:/Users/שלומי אלבז/לימודים/ג נוכחי/פרוייקט רפואת חירום/לפרוייקט jar קבצי/mysql-connector-java-5.1.14-bin.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.8.0_45">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

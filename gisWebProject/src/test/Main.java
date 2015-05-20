@@ -14,7 +14,6 @@ import routineProcess.Routine;
 import SQL_DataBase.SQL_db;
 
 public class Main {
-/////////////////////////////////
 	public static void main(String[] args) {
 		SQL_db sqlDataBase = new SQL_db();
 		Routine routintOb = new Routine();
