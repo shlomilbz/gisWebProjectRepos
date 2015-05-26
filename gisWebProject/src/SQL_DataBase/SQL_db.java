@@ -4,8 +4,12 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.sql.Time;
+
+
 
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
@@ -14,6 +18,7 @@ import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
 public class SQL_db {
 	private Connection connection;
 	private Statement statement;
+	private static final int maxCMID = 20;
 	
 	// ctor
 	public SQL_db(){
@@ -37,6 +42,39 @@ public class SQL_db {
 		{
 			disconnect();
 		}
+	}
+	
+	public int getRadiusFromDesicionTable(String cmid, double x, double y, double age, String disease) {
+		int radius=0;
+		
+		return radius;
+	}
+	
+	public List<String> getCMIDByRadius(double radius, double x, double y) {
+		
+		List<String> cmidAtRadius = new ArrayList<String>();
+		int countCMIDAtRadius=0;
+    	double secondX, secondY;
+    	String secondCmid;
+    	double distance;
+    	
+    	while(countCMIDAtRadius < maxCMID) {
+    		secondX=;
+    		secondY=;
+    		secondCMID=j;
+    			
+    		//calculate the distance
+    		distance = Math.sqrt((x-secondX)*(x-secondX) + (y-secondY)*(y-secondY));
+    			
+    		//add the closet cmid by the radius
+    		if(distance <= radius) {
+    			//list of the closet cmid
+    			cmidAtRadius.add(cmid);
+    			countCMIDAtRadius++;
+   			}//if
+    		
+   		}//while
+		return cmidAtRadius;
 	}
 	
 	
@@ -83,7 +121,7 @@ public class SQL_db {
 		}
 	}
 	
-	eventID, cmid, x, y, disease, age
+	//eventID, cmid, x, y, disease, age
 	public void updateDesicionTable(String cmid, double x, double y){
 		try {
 			connect();

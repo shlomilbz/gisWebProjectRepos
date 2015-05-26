@@ -1,14 +1,18 @@
 package emergencyProcess;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+
 
 
 
@@ -19,7 +23,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import SQL_DataBase.SQL_db;
-
 
 public class Emergency extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -56,43 +59,37 @@ public class Emergency extends HttpServlet {
 			// take each value from the json array separately
 			Iterator i = jsonArrayOb.iterator();
 //			JSONObject innerObj = (JSONObject) i.next();
-            //{"RequestID":"routineLocation"}
-            //if (innerObj.get("RequestID").equals("routineLocation")){
-            	//{"comunity_member_id":123456, "x":7.777, "y":8.999}
+
 	        while (i.hasNext()) {
 	             	JSONObject innerObj = (JSONObject) i.next();
+	             	
 	                if (innerObj.get("RequestID").equals("AroundLocation")){
+	                	//get from Json the data
 	                	String eventID = innerObj.get("eventID").toString();
 	                	String cmid  = innerObj.get("comunity_member_id").toString();
 	                	double x = Double.parseDouble(innerObj.get("x").toString());
 	                	double y = Double.parseDouble(innerObj.get("y").toString());
 	                	String disease  = innerObj.get("disease").toString();
 	                	double age = Double.parseDouble(innerObj.get("age").toString());
-	                	//double radius = Double.parseDouble(innerObj.get("radius").toString());
+	                	double radius = Double.parseDouble(innerObj.get("radius").toString());
 	                	
-	                	System.out.println("comunity_member_id "+ innerObj.get("comunity_member_id") +
-	                			" with x cor. " + innerObj.get("x")+
-	                			" and y cor. " + innerObj.get("y")+
-	                			" disease " + innerObj.get("disease")+
-	                			" age " + innerObj.get("age"));
-	                	
-	                	//sqlDataBase.updateDesicionTable(eventID, cmid, x, y, disease, age, radius);
-	                	sqlDataBase.updateDesicionTable(eventID, cmid, x, y, disease, age);
-
+	                	//if we don't get a radius
+	                	if(radius == 0) {
+	                		radius = sqlDataBase.getRadiusFromDesicionTable(cmid, x, y, age, disease);
 	                	}
+            			List<String> cmidAtRadius = new ArrayList<String>();
+            			cmidAtRadius = sqlDataBase.getCMIDByRadius(radius, x, y);
+	               	}
             }
-	        //get the parameter from arcgis to json object
-	        
-	        
+	        //get the parameter from arcgis to json object	        
 		} catch (ParseException ex) {
-
 			ex.printStackTrace();
 
 		} catch (NullPointerException ex) {
-
 			ex.printStackTrace();
 
 		}
+		//return cmidAtRadius;
 
 	}
 }
