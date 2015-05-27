@@ -59,9 +59,9 @@ public class SQL_db {
     	double distance;
     	
     	while(countCMIDAtRadius < maxCMID) {
-    		secondX=;
-    		secondY=;
-    		secondCMID=j;
+    		secondX=0;
+    		secondY=0;
+    		secondCmid="ffff";
     			
     		//calculate the distance
     		distance = Math.sqrt((x-secondX)*(x-secondX) + (y-secondY)*(y-secondY));
@@ -69,7 +69,7 @@ public class SQL_db {
     		//add the closet cmid by the radius
     		if(distance <= radius) {
     			//list of the closet cmid
-    			cmidAtRadius.add(cmid);
+    			cmidAtRadius.add(secondCmid);
     			countCMIDAtRadius++;
    			}//if
     		
@@ -122,7 +122,7 @@ public class SQL_db {
 	}
 	
 	//eventID, cmid, x, y, disease, age
-	public void updateDesicionTable(String cmid, double x, double y){
+	/*public void updateDesicionTable(String cmid, double x, double y){
 		try {
 			connect();
 			statement.execute("USE GIS_DB;");
@@ -163,7 +163,7 @@ public class SQL_db {
 		{
 			disconnect();
 		}
-	}
+	}*/
 	
 	private void connect(){
 		try {

@@ -73,6 +73,7 @@ public class Emergency extends HttpServlet {
 	                	double age = Double.parseDouble(innerObj.get("age").toString());
 	                	double radius = Double.parseDouble(innerObj.get("radius").toString());
 	                	
+	                	/**/radius=3;
 	                	//if we don't get a radius
 	                	if(radius == 0) {
 	                		radius = sqlDataBase.getRadiusFromDesicionTable(cmid, x, y, age, disease);
