@@ -12,8 +12,11 @@ import java.sql.Time;
 
 
 
+
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
+
+import emergencyProcess.Cmid;
 
 public class SQL_db {
 	private Connection connection;
@@ -43,7 +46,7 @@ public class SQL_db {
 			disconnect();
 		}
 	}
-	
+	//if we dont have a radius we take radius from decision table
 	public int getRadiusFromDesicionTable(String cmid, double x, double y, double age, String disease) {
 		int radius=0;
 		
@@ -51,29 +54,42 @@ public class SQL_db {
 	}
 	
 	public List<String> getCMIDByRadius(double radius, double x, double y) {
-		
 		List<String> cmidAtRadius = new ArrayList<String>();
 		int countCMIDAtRadius=0;
     	double secondX, secondY;
     	String secondCmid;
     	double distance;
-    	
-    	while(countCMIDAtRadius < maxCMID) {
-    		secondX=0;
-    		secondY=0;
-    		secondCmid="ffff";
-    			
-    		//calculate the distance
-    		distance = Math.sqrt((x-secondX)*(x-secondX) + (y-secondY)*(y-secondY));
-    			
-    		//add the closet cmid by the radius
-    		if(distance <= radius) {
-    			//list of the closet cmid
-    			cmidAtRadius.add(secondCmid);
-    			countCMIDAtRadius++;
-   			}//if
-    		
-   		}//while
+		try {
+			connect();
+			statement.execute("USE GIS_DB;");
+			ResultSet rs=statement.executeQuery("SELECT * FROM updatedLocation;");
+	    	//List<Cmid> listOfObjects = new ArrayList<Cmid>();
+			while(rs.next() && countCMIDAtRadius < maxCMID){
+	    		secondCmid = rs.getString(1);
+	    		secondX = rs.getDouble(2);
+	    		secondY= rs.getDouble(3);
+	    	    //Cmid newCmid = new Cmid (secondCmid, secondX, secondY);
+	    	    distance = Math.sqrt((x-secondX)*(x-secondX) + (y-secondY)*(y-secondY));
+	    	    if(distance <= radius) {
+	    	    	//listOfObjects.add(newCmid);
+	    	    	cmidAtRadius.add(secondCmid);
+	    	    	countCMIDAtRadius++;
+	    	    }
+			}
+		}
+		catch(SQLException se){
+		      //Handle errors for JDBC
+		      se.printStackTrace();
+		 }
+		 catch(Exception e){
+		      //Handle errors for Class.forName
+		      e.printStackTrace();
+		 }
+		// disconnect
+		finally
+		{
+			disconnect();
+		}
 		return cmidAtRadius;
 	}
 	
