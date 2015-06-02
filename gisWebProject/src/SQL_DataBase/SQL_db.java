@@ -18,7 +18,7 @@ public class SQL_db {
 	private static final int maxCMID = 20;
 	
 	// ctor
-	public SQL_db(){
+	public SQL_db() {
 		try {
 			connect();
 			statement.execute("USE GIS_DB;");
@@ -89,8 +89,29 @@ public class SQL_db {
 		return cmidAtRadius;
 	}
 	
+	public String getCMIDByPoint(double x, double y) {
+		String cmidNum="";
+		try {
+			connect();
+			statement.execute("USE GIS_DB;");
+			ResultSet rs=statement.executeQuery("SELECT * FROM updatedLocation WHERE x='"+x+"' AND y='"+y+"';");
+			cmidNum = rs.getString("cmid");
+		}
+		catch(SQLException se){
+		      //Handle errors for JDBC
+		      se.printStackTrace();
+		 }
+		 catch(Exception e){
+		      //Handle errors for Class.forName
+		      e.printStackTrace();
+		 }
+		finally {
+			disconnect();
+		}
+		return cmidNum;
+	}
 	
-	public void updateLocation(String cmid, double x, double y){
+	public void updateLocation(String cmid, double x, double y) {
 		try {
 			connect();
 			statement.execute("USE GIS_DB;");
@@ -133,31 +154,26 @@ public class SQL_db {
 		}
 	}
 	
-	public void updateDecisionTable(String eventID, String cmid, double x, double y, String state, String area, String disease, float age, float radius){
+	public void updateDecisionTable(String eventID, String cmid, double x, double y, String state, String area, String disease, float age, int radius){
 		try {
 			connect();
 			statement.execute("USE GIS_DB;");
-			ResultSet rs=statement.executeQuery("SELECT * FROM updatedLocation WHERE cmid='"+cmid+"';");
-			if(!rs.next()){
-				statement.executeUpdate("INSERT INTO updatedLocation VALUES ('"+cmid+"',"+x+","+y+",CURDATE(),CURTIME(),CURDATE(),CURTIME());");
+			ResultSet rs=statement.executeQuery("SELECT * FROM updatedLocation WHERE eventID='"+eventID+"';");
+			if(!rs.next()) {
+				statement.executeUpdate("INSERT INTO updatedLocation VALUES ('"+eventID+"','"+cmid+"',"+x+","+y+",'"+state+"','"+area+"','"+disease+"',"+age+", "+radius+");");
 			}
-			else{
-				//rs.previous();
+			else {
+				String eventID_val = rs.getString("eventID");
+				String cmid_val = rs.getString("cmid");
 				double x_val = rs.getDouble("x");
 				double y_val = rs.getDouble("y");
-				String cmid_val = rs.getString("cmid");
-				Date date_val = rs.getDate("createdDate");
-				Time time_val = rs.getTime("createdTime");
-				Date lastUpdatedDate_val = rs.getDate("lastUpdatedDate");
-				Time lastUpdatedTime_val = rs.getTime("lastUpdatedTime");
-				// if the location changed
-				if((x!=x_val)||(y!=y_val)){
-					statement.executeUpdate("INSERT INTO locationHistory VALUES ('"+cmid_val+"',"+x_val+","+y_val+",'"+date_val+"','"+time_val+"','"+lastUpdatedDate_val+"','"+lastUpdatedTime_val+"');");
-					statement.executeUpdate("UPDATE updatedLocation SET x="+x+", y="+y+", createdDate = CURDATE(), createdTime = CURTIME(), lastUpdatedDate = CURDATE(), lastUpdatedTime = CURTIME() WHERE cmid='"+cmid+"';");
-				}
-				else{// the location didn't changed
-					statement.executeUpdate("UPDATE updatedLocation SET lastUpdatedDate = CURDATE(), lastUpdatedTime = CURTIME() WHERE cmid='"+cmid+"';");
-				}
+				String state_val = rs.getString("state");
+				String area_val = rs.getString("area");
+				String disease_val = rs.getString("disease");
+				float age_val = rs.getFloat("age");
+				int radius_val = rs.getInt("radius");
+				statement.executeUpdate("UPDATE decisionTable SET eventID="+eventID_val+", cmid="+cmid_val+", x="+x_val+", y="+y_val+", state= "+state_val+", area="+area_val+", disease="+disease_val+", age="+age_val+", radius="+radius_val+", WHERE cmid='"+cmid+"';");
+
 			}
 		}
 		
@@ -170,12 +186,11 @@ public class SQL_db {
 		      e.printStackTrace();
 		 }
 		// disconnect
-		finally
-		{
+		finally {
 			disconnect();
 		}
 	}
-	
+
 	public void updateEmergencyProcess(String eventID,String cmid,int radius,int type)
 	{
 		try {
@@ -185,8 +200,7 @@ public class SQL_db {
 			if(!rs.next()){
 				statement.executeUpdate("INSERT INTO emergencyProcess VALUES ('"+eventID+"','"+cmid+"',"+radius+",'"+type+"');");
 			}
-			else
-			{
+			else {
 				String ID=rs.getString("eventID");
 				String cmID=rs.getString("cmid");
 				int radiusEvent=rs.getInt("radius");
@@ -194,22 +208,21 @@ public class SQL_db {
 				statement.executeUpdate("UPDATE emergencyProcess SET eventID="+ID+", cmid="+cmID+", radius="+radiusEvent+",type= "+typeOfPerson+" WHERE cmid='"+cmid+"';");
 			}
 		}
-		catch(SQLException se){
+		catch(SQLException se) {
 			//Handle errors for JDBC
 			se.printStackTrace();
 		}
-		catch(Exception e){
+		catch(Exception e) {
 			//Handle errors for Class.forName
 			e.printStackTrace();
 		}
 		// disconnect
-		finally
-		{
+		finally {
 			disconnect();
 		}
 	}
 	
-	private void connect(){
+	private void connect() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 			String dbUrl = "jdbc:mysql://localhost";
@@ -230,19 +243,19 @@ public class SQL_db {
 		      e.printStackTrace();
 		 }
 	}
-	private void disconnect(){
+	private void disconnect() {
 	      //finally block used to close resources
-	      try{
+	      try {
 	         if(statement!=null)
 	        	 statement.close();
 	      }
-	      catch(SQLException se2){
+	      catch(SQLException se2) {
 	      }// nothing we can do
 	      try{
 	         if(connection!=null)
 	        	 connection.close();
 	      }
-	      catch(SQLException se){
+	      catch(SQLException se) {
 	         se.printStackTrace();
 	      }//end finally try
 	}

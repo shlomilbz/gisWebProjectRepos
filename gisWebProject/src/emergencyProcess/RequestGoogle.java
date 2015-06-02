@@ -74,7 +74,7 @@ public class RequestGoogle extends HttpServlet {
 			//{"RequestID":"routineLocation"}
 			//if (innerObj.get("RequestID").equals("routineLocation")){
 			//{"comunity_member_id":123456, "x":7.777, "y":8.999}
-			/**
+			/*
 			 * need to check if we need this
 			 * while (i.hasNext()) {
 				// create inner obj to get the data from all json obd in json array
@@ -86,14 +86,15 @@ public class RequestGoogle extends HttpServlet {
 					//         	double radius=Double.parseDouble((innerObj.get("radius").toString()))
 					System.out.println("comunity_member_id "+ innerObj.get("comunity_member_id") +
 							" with eventid cor. " + innerObj.get("eventid"));
-					//		"radius "+innerObj.get(radius));**/
+					//		"radius "+innerObj.get(radius));*/
 			//create new sql table by michal with eventid cmid and attribute helper or sick person (String)
 			//get the location by cmid michal
+			double x=0; double y=0;
+			String cmid = sqlDataBase.getCMIDByPoint(x,y);
 
 			try {
 				JSONArray jsonToSent=new JSONArray();
 				JSONObject obj=new JSONObject();
-				String cmid="";
 				obj.put("comunity_member_id", cmid);
 				String driving=sendGet("driving",34.731161,31.880611,34.663870,31.812951);
 				obj.put("eta_by_car",driving);
@@ -106,17 +107,9 @@ public class RequestGoogle extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
-
-
-
-
 		} catch (NullPointerException ex) {
-
 			ex.printStackTrace();
-
 		}
-
 	}
 	// requte for get time by mod and source and target
 	private static String sendGet(String mod,double yCurrent,double xCurrent,double needToY,double needToX) throws Exception {
