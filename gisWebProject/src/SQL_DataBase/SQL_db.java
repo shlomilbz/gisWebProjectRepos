@@ -9,14 +9,8 @@ import java.util.Date;
 import java.util.List;
 import java.sql.Time;
 
-
-
-
-
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
-
-import emergencyProcess.Cmid;
 
 public class SQL_db {
 	private Connection connection;
@@ -30,7 +24,8 @@ public class SQL_db {
 			statement.execute("USE GIS_DB;");
 			statement.execute("CREATE TABLE IF NOT EXISTS updatedLocation (cmid VARCHAR(20), x DOUBLE(9,6), y DOUBLE(9,6), createdDate DATE, createdTime TIME, lastUpdatedDate DATE, lastUpdatedTime TIME);");/*  */
 			statement.execute("CREATE TABLE IF NOT EXISTS locationHistory (cmid VARCHAR(20), x DOUBLE(9,6), y DOUBLE(9,6), createdDate DATE, createdTime TIME, lastUpdatedDate DATE, lastUpdatedTime TIME);");
-			statement.execute("CREATE TABLE IF NOT EXISTS decisionTable (eventID VARCHAR(20), cmid VARCHAR(20), x DOUBLE(9,6), y DOUBLE(9,6), state VARCHAR(20), area VARCHAR(15), disease VARCHAR(25), age FLOAT(5,2), radius INT);");
+			statement.execute("CREATE TABLE IF NOT EXISTS decisionTable (eventID VARCHAR(20), cmid VARCHAR(20), x DOUBLE(9,6), y DOUBLE(9,6), state VARCHAR(20), area VARCHAR(15), disease VARCHAR(25), age FLOAT(5,2), radius INT;");
+			statement.execute("CREATE TABLE IF NOT EXISTS emergencyProcess (eventID VARCHAR(20), cmid VARCHAR(20), radius INT, type INT);");
 		}
 		catch(SQLException se){
 		      //Handle errors for JDBC
@@ -47,13 +42,13 @@ public class SQL_db {
 		}
 	}
 	//if we dont have a radius we take radius from decision table
-	public int getRadiusFromDesicionTable(String cmid, double x, double y, double age, String disease) {
+	public int getRadiusFromDesicionTable(String eventID, String cmid, double x, double y, String state, String area, String disease, float age) {
 		int radius=0;
 		
 		return radius;
 	}
 	
-	public List<String> getCMIDByRadius(double radius, double x, double y) {
+	public List<String> getCMIDByRadius(int radius, double x, double y) {
 		List<String> cmidAtRadius = new ArrayList<String>();
 		int countCMIDAtRadius=0;
     	double secondX, secondY;
@@ -76,6 +71,7 @@ public class SQL_db {
 	    	    	countCMIDAtRadius++;
 	    	    }
 			}
+			
 		}
 		catch(SQLException se){
 		      //Handle errors for JDBC
@@ -137,8 +133,7 @@ public class SQL_db {
 		}
 	}
 	
-	//eventID, cmid, x, y, disease, age
-	/*public void updateDesicionTable(String cmid, double x, double y){
+	public void updateDecisionTable(String eventID, String cmid, double x, double y, String state, String area, String disease, float age, float radius){
 		try {
 			connect();
 			statement.execute("USE GIS_DB;");
@@ -179,7 +174,40 @@ public class SQL_db {
 		{
 			disconnect();
 		}
-	}*/
+	}
+	
+	public void updateEmergencyProcess(String eventID,String cmid,int radius,int type)
+	{
+		try {
+			connect();
+			statement.execute("USE GIS_DB;");
+			ResultSet rs=statement.executeQuery("SELECT * FROM emergencyProcess WHERE cmid='"+cmid+"';");
+			if(!rs.next()){
+				statement.executeUpdate("INSERT INTO emergencyProcess VALUES ('"+eventID+"','"+cmid+"',"+radius+",'"+type+"');");
+			}
+			else
+			{
+				String ID=rs.getString("eventID");
+				String cmID=rs.getString("cmid");
+				int radiusEvent=rs.getInt("radius");
+				int typeOfPerson=rs.getInt("type");
+				statement.executeUpdate("UPDATE emergencyProcess SET eventID="+ID+", cmid="+cmID+", radius="+radiusEvent+",type= "+typeOfPerson+" WHERE cmid='"+cmid+"';");
+			}
+		}
+		catch(SQLException se){
+			//Handle errors for JDBC
+			se.printStackTrace();
+		}
+		catch(Exception e){
+			//Handle errors for Class.forName
+			e.printStackTrace();
+		}
+		// disconnect
+		finally
+		{
+			disconnect();
+		}
+	}
 	
 	private void connect(){
 		try {

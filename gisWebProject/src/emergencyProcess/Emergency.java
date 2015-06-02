@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 
 
 
+
+
 //import org.json.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -59,30 +61,32 @@ public class Emergency extends HttpServlet {
 			// take each value from the json array separately
 			Iterator i = jsonArrayOb.iterator();
 //			JSONObject innerObj = (JSONObject) i.next();
-
+			List<String> cmidAtRadius = new ArrayList<String>();
 	        while (i.hasNext()) {
 	             	JSONObject innerObj = (JSONObject) i.next();
-	             	
 	                if (innerObj.get("RequestID").equals("AroundLocation")){
 	                	//get from Json the data
 	                	String eventID = innerObj.get("eventID").toString();
 	                	String cmid  = innerObj.get("comunity_member_id").toString();
 	                	double x = Double.parseDouble(innerObj.get("x").toString());
 	                	double y = Double.parseDouble(innerObj.get("y").toString());
+	                	String area = innerObj.get("area").toString();
+	                	String state = innerObj.get("state").toString();	                	
 	                	String disease  = innerObj.get("disease").toString();
-	                	double age = Double.parseDouble(innerObj.get("age").toString());
-	                	double radius = Double.parseDouble(innerObj.get("radius").toString());
-	                	
+	                	float age = Float.parseFloat(innerObj.get("age").toString());
+	                	int radius = Integer.parseInt(innerObj.get("radius").toString());
 	                	/**/radius=3;
 	                	//if we haven't a radius
 	                	if(radius == 0) {
-	                		radius = sqlDataBase.getRadiusFromDesicionTable(cmid, x, y, age, disease);
+	                		radius = sqlDataBase.getRadiusFromDesicionTable(eventID, cmid, x, y, state, area, disease, age);
 	                	}
-            			List<String> cmidAtRadius = new ArrayList<String>();
             			cmidAtRadius = sqlDataBase.getCMIDByRadius(radius, x, y);
+            			sqlDataBase.updateDecisionTable(eventID, cmid, x, y, state, area, disease, age, radius);
 	               	}
             }
-	        //get the parameter from arcgis to json object	        
+	        //Elior need add Json Array
+	        //Thank you!!
+	       //get the parameter from arcgis to json object	        
 		} catch (ParseException ex) {
 			ex.printStackTrace();
 
