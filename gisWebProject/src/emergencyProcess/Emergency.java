@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 
+
 //import org.json.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -65,23 +66,32 @@ public class Emergency extends HttpServlet {
 	        while (i.hasNext()) {
 	             	JSONObject innerObj = (JSONObject) i.next();
 	                if (innerObj.get("RequestID").equals("AroundLocation")){
+	                	String area;
 	                	//get from Json the data
 	                	String eventID = innerObj.get("eventID").toString();
 	                	String cmid  = innerObj.get("comunity_member_id").toString();
 	                	double x = Double.parseDouble(innerObj.get("x").toString());
 	                	double y = Double.parseDouble(innerObj.get("y").toString());
-	                	String area = innerObj.get("area").toString();
 	                	String state = innerObj.get("state").toString();	                	
-	                	String disease  = innerObj.get("disease").toString();
+	                	String medical  = innerObj.get("medical").toString();
 	                	float age = Float.parseFloat(innerObj.get("age").toString());
 	                	int radius = Integer.parseInt(innerObj.get("radius").toString());
+	                	
+	                	//need to implement the function
+	                	area = sqlDataBase.getArea();
+	                	
 	                	/**/radius=3;
 	                	//if we haven't a radius
 	                	if(radius == 0) {
-	                		radius = sqlDataBase.getRadiusFromDesicionTable(eventID, cmid, x, y, state, area, disease, age);
+	                		//need to implement the function
+	                		radius = sqlDataBase.getRadiusFromDesicionTable(eventID, cmid, x, y, state, area, medical, age);
+	                		sqlDataBase.updateDecisionTable(eventID, cmid, x, y, state, area, medical, age, radius);
+	                	}
+	                	else {
+	            			sqlDataBase.updateDecisionTable(eventID, cmid, x, y, state, area, medical, age, radius);
+
 	                	}
             			cmidAtRadius = sqlDataBase.getCMIDByRadius(radius, x, y);
-            			sqlDataBase.updateDecisionTable(eventID, cmid, x, y, state, area, disease, age, radius);
 	               	}
             }
 	        //Elior need add Json Array
