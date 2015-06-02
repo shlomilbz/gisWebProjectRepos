@@ -24,7 +24,7 @@ public class SQL_db {
 			statement.execute("USE GIS_DB;");
 			statement.execute("CREATE TABLE IF NOT EXISTS updatedLocation (cmid VARCHAR(20), x DOUBLE(9,6), y DOUBLE(9,6), createdDate DATE, createdTime TIME, lastUpdatedDate DATE, lastUpdatedTime TIME);");/*  */
 			statement.execute("CREATE TABLE IF NOT EXISTS locationHistory (cmid VARCHAR(20), x DOUBLE(9,6), y DOUBLE(9,6), createdDate DATE, createdTime TIME, lastUpdatedDate DATE, lastUpdatedTime TIME);");
-			statement.execute("CREATE TABLE IF NOT EXISTS decisionTable (eventID VARCHAR(20), cmid VARCHAR(20), x DOUBLE(9,6), y DOUBLE(9,6), state VARCHAR(20), area VARCHAR(15), medical VARCHAR(25), age FLOAT(5,2), radius INT;");
+			statement.execute("CREATE TABLE IF NOT EXISTS decisionTable (eventID VARCHAR(20), cmid VARCHAR(20), x DOUBLE(9,6), y DOUBLE(9,6), state VARCHAR(20), region_type VARCHAR(15), medical_condition_description VARCHAR(25), age FLOAT(5,2), radius INT;");
 			statement.execute("CREATE TABLE IF NOT EXISTS emergencyProcess (eventID VARCHAR(20), cmid VARCHAR(20), radius INT, type INT);");
 		}
 		catch(SQLException se){
@@ -42,13 +42,13 @@ public class SQL_db {
 		}
 	}
 	//TODO
-	public String getArea() {
-		String area = " ";
-		return area;
+	public String getregion_type() {
+		String region_type = " ";
+		return region_type;
 	}
 	//TODO
 	//if we dont have a radius we take radius from decision table
-	public int getRadiusFromDesicionTable(String eventID, String cmid, double x, double y, String state, String area, String medical, float age) {
+	public int getRadiusFromDesicionTable(String eventID, String cmid, double x, double y, String state, String region_type, String medical_condition_description, float age) {
 		int radius=0;
 		
 		return radius;
@@ -160,13 +160,13 @@ public class SQL_db {
 		}
 	}
 	
-	public void updateDecisionTable(String eventID, String cmid, double x, double y, String state, String area, String medical, float age, int radius){
+	public void updateDecisionTable(String eventID, String cmid, double x, double y, String state, String region_type, String medical_condition_description, float age, int radius){
 		try {
 			connect();
 			statement.execute("USE GIS_DB;");
 			ResultSet rs=statement.executeQuery("SELECT * FROM updatedLocation WHERE eventID='"+eventID+"';");
 			if(!rs.next()) {
-				statement.executeUpdate("INSERT INTO updatedLocation VALUES ('"+eventID+"','"+cmid+"',"+x+","+y+",'"+state+"','"+area+"','"+medical+"',"+age+", "+radius+");");
+				statement.executeUpdate("INSERT INTO updatedLocation VALUES ('"+eventID+"','"+cmid+"',"+x+","+y+",'"+state+"','"+region_type+"','"+medical_condition_description+"',"+age+", "+radius+");");
 			}
 			else {
 				String eventID_val = rs.getString("eventID");
@@ -174,11 +174,11 @@ public class SQL_db {
 				double x_val = rs.getDouble("x");
 				double y_val = rs.getDouble("y");
 				String state_val = rs.getString("state");
-				String area_val = rs.getString("area");
-				String medical_val = rs.getString("medical");
+				String region_type_val = rs.getString("region_type");
+				String medical_condition_description_val = rs.getString("medical_condition_description");
 				float age_val = rs.getFloat("age");
 				int radius_val = rs.getInt("radius");
-				statement.executeUpdate("UPDATE decisionTable SET eventID="+eventID_val+", cmid="+cmid_val+", x="+x_val+", y="+y_val+", state= "+state_val+", area="+area_val+", medical="+medical_val+", age="+age_val+", radius="+radius_val+", WHERE cmid='"+cmid+"';");
+				statement.executeUpdate("UPDATE decisionTable SET eventID="+eventID_val+", cmid="+cmid_val+", x="+x_val+", y="+y_val+", state= "+state_val+", region_type="+region_type_val+", medical_condition_description="+medical_condition_description_val+", age="+age_val+", radius="+radius_val+", WHERE cmid='"+cmid+"';");
 
 			}
 		}

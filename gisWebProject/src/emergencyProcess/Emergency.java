@@ -61,29 +61,29 @@ public class Emergency extends HttpServlet {
 	        while (i.hasNext()) {
 	             	JSONObject innerObj = (JSONObject) i.next();
 	                if (innerObj.get("RequestID").equals("AroundLocation")){
-	                	String area;
+	                	String region_type;
 	                	//get from Json the data
 	                	String eventID = innerObj.get("eventID").toString();
 	                	String cmid  = innerObj.get("comunity_member_id").toString();
 	                	x = Double.parseDouble(innerObj.get("x").toString());
 	                    y = Double.parseDouble(innerObj.get("y").toString());
 	                	String state = innerObj.get("state").toString();	                	
-	                	String medical  = innerObj.get("medical").toString();
+	                	String medical_condition_description  = innerObj.get("medical_condition_description").toString();
 	                	float age = Float.parseFloat(innerObj.get("age").toString());
 	                	radius = Integer.parseInt(innerObj.get("radius").toString());
 	                	
 	                	//need to implement the function
-	                	area = sqlDataBase.getArea();
+	                	region_type = sqlDataBase.getregion_type();
 	                	
 	                	/**/radius=3;
 	                	//if we haven't a radius
 	                	if(radius == 0) {
 	                		//need to implement the function
-	                		radius = sqlDataBase.getRadiusFromDesicionTable(eventID, cmid, x, y, state, area, medical, age);
-	                		sqlDataBase.updateDecisionTable(eventID, cmid, x, y, state, area, medical, age, radius);
+	                		radius = sqlDataBase.getRadiusFromDesicionTable(eventID, cmid, x, y, state, region_type, medical_condition_description, age);
+	                		sqlDataBase.updateDecisionTable(eventID, cmid, x, y, state, region_type, medical_condition_description, age, radius);
 	                	}
 	                	else {
-	            			sqlDataBase.updateDecisionTable(eventID, cmid, x, y, state, area, medical, age, radius);
+	            			sqlDataBase.updateDecisionTable(eventID, cmid, x, y, state, region_type, medical_condition_description, age, radius);
 
 	                	}
             			cmidAtRadius = sqlDataBase.getCMIDByRadius(radius, x, y);
@@ -96,11 +96,13 @@ public class Emergency extends HttpServlet {
 	        String[] split=address.split(",");
 	        obj.put("state", split[2]);
 	        obj.put("location_remark",address);
-	        obj.put("region_type", sqlDataBase.getArea());
+	        obj.put("region_type", sqlDataBase.getregion_type());
 	        for (int j=0; j<cmidAtRadius.size();j++) {
 	        	obj.put(cmidAtRadius.get(j), "NULL");
 	        }
-	        jsonToSend.add(obj);        
+	        jsonToSend.add(obj);
+	        //obj.sendResponse();
+	        //send with sendResponse
 		} catch (ParseException ex) {
 			ex.printStackTrace();
 		} catch (NullPointerException ex) {
