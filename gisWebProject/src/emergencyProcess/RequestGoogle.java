@@ -190,7 +190,7 @@ public class RequestGoogle extends HttpServlet {
 	 * @param lat
 	 * @return
 	 */
-	private static String getAddresss(double x, double y)
+	public String getAddresss(double x, double y)
 			throws MalformedURLException, IOException, org.json.simple.parser.ParseException {
 		//get double and convert them to string for url format
 		String lng=Double.toString(x);

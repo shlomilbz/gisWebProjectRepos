@@ -41,12 +41,12 @@ public class SQL_db {
 			disconnect();
 		}
 	}
-	
+	//TODO
 	public String getArea() {
 		String area = " ";
 		return area;
 	}
-	
+	//TODO
 	//if we dont have a radius we take radius from decision table
 	public int getRadiusFromDesicionTable(String eventID, String cmid, double x, double y, String state, String area, String medical, float age) {
 		int radius=0;

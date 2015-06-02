@@ -12,13 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-
-
-
-
-
-
 //import org.json.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -63,6 +56,8 @@ public class Emergency extends HttpServlet {
 			Iterator i = jsonArrayOb.iterator();
 //			JSONObject innerObj = (JSONObject) i.next();
 			List<String> cmidAtRadius = new ArrayList<String>();
+			double x = 0,y = 0;
+			int radius;
 	        while (i.hasNext()) {
 	             	JSONObject innerObj = (JSONObject) i.next();
 	                if (innerObj.get("RequestID").equals("AroundLocation")){
@@ -70,12 +65,12 @@ public class Emergency extends HttpServlet {
 	                	//get from Json the data
 	                	String eventID = innerObj.get("eventID").toString();
 	                	String cmid  = innerObj.get("comunity_member_id").toString();
-	                	double x = Double.parseDouble(innerObj.get("x").toString());
-	                	double y = Double.parseDouble(innerObj.get("y").toString());
+	                	x = Double.parseDouble(innerObj.get("x").toString());
+	                    y = Double.parseDouble(innerObj.get("y").toString());
 	                	String state = innerObj.get("state").toString();	                	
 	                	String medical  = innerObj.get("medical").toString();
 	                	float age = Float.parseFloat(innerObj.get("age").toString());
-	                	int radius = Integer.parseInt(innerObj.get("radius").toString());
+	                	radius = Integer.parseInt(innerObj.get("radius").toString());
 	                	
 	                	//need to implement the function
 	                	area = sqlDataBase.getArea();
@@ -94,18 +89,23 @@ public class Emergency extends HttpServlet {
             			cmidAtRadius = sqlDataBase.getCMIDByRadius(radius, x, y);
 	               	}
             }
-	        //Elior need add Json Array
-	        //Thank you!!
-	       //get the parameter from arcgis to json object	        
+	        JSONArray jsonToSend=new JSONArray();
+	        JSONObject obj=new JSONObject();
+	        RequestGoogle req=new RequestGoogle();
+	        String address=req.getAddresss(x, y);
+	        String[] split=address.split(",");
+	        obj.put("state", split[2]);
+	        obj.put("location_remark",address);
+	        obj.put("region_type", sqlDataBase.getArea());
+	        for (int j=0; j<cmidAtRadius.size();j++) {
+	        	obj.put(cmidAtRadius.get(j), "NULL");
+	        }
+	        jsonToSend.add(obj);        
 		} catch (ParseException ex) {
 			ex.printStackTrace();
-
 		} catch (NullPointerException ex) {
 			ex.printStackTrace();
-
 		}
-		//return cmidAtRadius;
-
 	}
 }
 

@@ -52,10 +52,6 @@ public class Routine extends HttpServlet {
 			JSONArray jsonArrayOb=(JSONArray) jsonObject.get("JSONFile");
 			// take each value from the json array separately
 			Iterator i = jsonArrayOb.iterator();
-//			JSONObject innerObj = (JSONObject) i.next();
-            //{"RequestID":"routineLocation"}
-            //if (innerObj.get("RequestID").equals("routineLocation")){
-            	//{"comunity_member_id":123456, "x":7.777, "y":8.999}
 	        while (i.hasNext()) {
 	             	JSONObject innerObj = (JSONObject) i.next();
 	                if (innerObj.get("RequestID").equals("routineLocation")){
