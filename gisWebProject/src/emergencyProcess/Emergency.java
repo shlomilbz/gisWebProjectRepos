@@ -54,7 +54,6 @@ public class Emergency extends HttpServlet {
 			JSONArray jsonArrayOb=(JSONArray) jsonObject.get("JSONFile");
 			// take each value from the json array separately
 			Iterator i = jsonArrayOb.iterator();
-//			JSONObject innerObj = (JSONObject) i.next();
 			List<String> cmidAtRadius = new ArrayList<String>();
 			double x = 0,y = 0;
 			int radius;
@@ -67,7 +66,7 @@ public class Emergency extends HttpServlet {
 	                	String cmid  = innerObj.get("comunity_member_id").toString();
 	                	x = Double.parseDouble(innerObj.get("x").toString());
 	                    y = Double.parseDouble(innerObj.get("y").toString());
-	                	String state = innerObj.get("state").toString();	                	
+	                	String state = innerObj.get("region_type").toString();	                	
 	                	String medical_condition_description  = innerObj.get("medical_condition_description").toString();
 	                	float age = Float.parseFloat(innerObj.get("age").toString());
 	                	radius = Integer.parseInt(innerObj.get("radius").toString());
@@ -77,15 +76,12 @@ public class Emergency extends HttpServlet {
 	                	
 	                	/**/radius=3;
 	                	//if we haven't a radius
-	                	if(radius == 0) {
+	                	//TODO
+	                	if(radius == 0 /*|| radius == null*/) {
 	                		//need to implement the function
 	                		radius = sqlDataBase.getRadiusFromDesicionTable(eventID, cmid, x, y, state, region_type, medical_condition_description, age);
-	                		sqlDataBase.updateDecisionTable(eventID, cmid, x, y, state, region_type, medical_condition_description, age, radius);
 	                	}
-	                	else {
-	            			sqlDataBase.updateDecisionTable(eventID, cmid, x, y, state, region_type, medical_condition_description, age, radius);
-
-	                	}
+                		sqlDataBase.updateDecisionTable(eventID, cmid, x, y, state, region_type, medical_condition_description, age, radius);
             			cmidAtRadius = sqlDataBase.getCMIDByRadius(radius, x, y);
 	               	}
             }
